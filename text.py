@@ -39,13 +39,11 @@ def extract_manufacturing_date(text):
     return match.group(0) if match else 'Not Found'
 
 def extract_mrp(text):
-    # Search for patterns like "__.00" or "__,00"
     mrp_regex = re.compile(r'\b\d+[.,]\d{2}\b')
     match = mrp_regex.search(text)
     if match:
         return match.group(0)
 
-    # Search for patterns like "MRP: __"
     mrp_colon_regex = re.compile(r'\bMRP\s*:\s*(\d+[.,]\d{2})\b', re.IGNORECASE)
     match = mrp_colon_regex.search(text)
     if match:
@@ -57,6 +55,7 @@ def extract_batch_number(text):
     batch_number_regex = re.compile(r'\b[A-Z0-9]{7}\b')
     match = batch_number_regex.search(text)
     return match.group(0) if match else 'Not Found'
+
 
 def save_to_excel(data, excel_file_path):
     try:
@@ -111,6 +110,7 @@ def index():
 
             # Save extracted data to Excel
             save_to_excel(extracted_data, EXCEL_FILE_PATH)
+    
     return render_template_string('''
     <!DOCTYPE html>
     <html>
@@ -148,10 +148,10 @@ def index():
     {% if extracted_data %}
     <h2>Extracted Data</h2>
     <ul>
-      <li><strong>Manufacturing Date:</strong> {{ extracted_data.manufacturing_date }}</li>
-      <li><strong>Batch Number:</strong> {{ extracted_data.batch_number }}</li>
-      <li><strong>Net Weight:</strong> {{ extracted_data.net_weight }}</li>
-      <li><strong>MRP:</strong> {{ extracted_data.mrp }}</li>
+      <li><strong>Manufacturing Date:</strong> {{ extracted_data['manufacturing_date'] }}</li>
+      <li><strong>Batch Number:</strong> {{ extracted_data['batch_number'] }}</li>
+      <li><strong>Net Weight:</strong> {{ extracted_data['net_weight'] }}</li>
+      <li><strong>MRP:</strong> {{ extracted_data['mrp'] }}</li>
     </ul>
      
     {% endif %}
@@ -179,7 +179,7 @@ def index():
       });
     </script>
     </html>
-    ''')
+    ''', raw_text=raw_text, extracted_data=extracted_data)
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
