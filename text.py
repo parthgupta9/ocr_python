@@ -58,7 +58,6 @@ def extract_batch_number(text):
     match = batch_number_regex.search(text)
     return match.group(0) if match else 'Not Found'
 
-
 def save_to_excel(data, excel_file_path):
     try:
         if os.path.exists(excel_file_path):
@@ -170,20 +169,17 @@ def index():
           video.srcObject = stream;
         })
         .catch((err) => {
-          console.error("Error accessing the camera: " + err);
+          console.error('Error accessing webcam: ', err);
         });
 
       snap.addEventListener('click', () => {
-        context.drawImage(video, 0, 0, 640, 480);
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
         const imageData = canvas.toDataURL('image/png');
         image_data_input.value = imageData;
       });
     </script>
-    ''', raw_text=raw_text, extracted_data=extracted_data)
-
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(UPLOAD_FOLDER, filename)
+    </html>
+    ''')
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
